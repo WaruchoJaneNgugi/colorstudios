@@ -319,14 +319,15 @@ footer span { color:var(--rose); }
 /* ── STICKY CTA ── */
 .sticky-wa {
   position:fixed; bottom:1.5rem; right:1.5rem;
-  background:#25d366; color:#fff; font-weight:700;
-  padding:.75rem 1.4rem; border-radius:50px;
-  text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,.18);
-  z-index:999; font-size:.82rem; letter-spacing:.5px;
+  background:#25d366; color:#fff;
+  width:52px; height:52px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  text-decoration:none; box-shadow:0 4px 16px rgba(0,0,0,.2);
+  z-index:999;
   transition:transform .2s ease, box-shadow .2s ease;
   animation:fadeIn .5s 1s both, pulse 2.5s 2s infinite;
 }
-.sticky-wa:hover { transform:scale(1.07) translateY(-2px); box-shadow:0 10px 28px rgba(37,211,102,.4); }
+.sticky-wa:hover { transform:scale(1.12); box-shadow:0 10px 28px rgba(37,211,102,.45); }
 
 @media (max-width:480px) {
   .service-footer { flex-direction:column; align-items:flex-start; }
