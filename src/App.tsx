@@ -119,6 +119,7 @@ export default function App() {
             <span key={c} className="cat-tag">{c}</span>
           ))}
         </div>
+
         <div className="grid">
           {portfolio.length > 0
             ? portfolio.map(p => (

@@ -1,0 +1,114 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Poppins', system-ui, sans-serif; background: #fff8f9; color: #1e1014; }
+
+/* ── LOGIN ── */
+.admin-login {
+  min-height: 100svh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #fdf0f3, #fff);
+}
+.admin-login-card {
+  background: #fff; border-radius: 18px; padding: 2.5rem 2rem;
+  box-shadow: 0 8px 32px rgba(200,92,116,.12); width: 100%; max-width: 360px;
+  display: flex; flex-direction: column; gap: .9rem; text-align: center;
+}
+.admin-eyebrow { font-size: .65rem; letter-spacing: 4px; text-transform: uppercase; color: #c85c74; font-weight: 600; }
+.admin-login-card h1 { font-size: 1.6rem; font-weight: 700; color: #1e1014; }
+.admin-login-card input {
+  padding: .65rem 1rem; border: 1.5px solid #eedde2; border-radius: 10px;
+  font-size: .9rem; font-family: inherit; outline: none;
+  transition: border-color .2s;
+}
+.admin-login-card input:focus { border-color: #c85c74; }
+.admin-login-card button {
+  background: #c85c74; color: #fff; border: none; border-radius: 50px;
+  padding: .7rem; font-size: .9rem; font-weight: 600; cursor: pointer;
+  transition: background .2s;
+}
+.admin-login-card button:hover { background: #a04060; }
+.admin-error { color: #c85c74; font-size: .8rem; }
+
+/* ── SHELL ── */
+.admin-wrap { min-height: 100svh; display: flex; flex-direction: column; }
+.admin-header {
+  background: #1e1014; color: #fff; padding: 1rem 2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: .85rem; font-weight: 600; letter-spacing: 1px;
+}
+.admin-logout {
+  background: none; border: 1px solid rgba(255,255,255,.3); color: rgba(255,255,255,.7);
+  padding: .3rem .9rem; border-radius: 20px; cursor: pointer; font-size: .75rem;
+  transition: border-color .2s, color .2s;
+}
+.admin-logout:hover { border-color: #c85c74; color: #c85c74; }
+
+/* ── TABS ── */
+.admin-tabs {
+  display: flex; gap: 0; background: #fff; border-bottom: 1px solid #eedde2;
+  padding: 0 2rem;
+}
+.admin-tabs button {
+  background: none; border: none; padding: .9rem 1.4rem;
+  font-size: .8rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;
+  color: #9e7a82; cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color .2s, border-color .2s;
+}
+.admin-tabs button.active { color: #c85c74; border-bottom-color: #c85c74; }
+
+/* ── MAIN ── */
+.admin-main { flex: 1; padding: 2rem; max-width: 1100px; width: 100%; margin: 0 auto; }
+.admin-main h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; color: #1e1014; }
+
+/* ── FORM ROW ── */
+.admin-row, .admin-form {
+  display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1.5rem;
+}
+.admin-form input, .admin-form select,
+.admin-row select {
+  flex: 1; min-width: 120px; padding: .55rem .85rem;
+  border: 1.5px solid #eedde2; border-radius: 10px;
+  font-size: .85rem; font-family: inherit; outline: none;
+  transition: border-color .2s;
+}
+.admin-form input:focus, .admin-row select:focus { border-color: #c85c74; }
+.admin-form button, .admin-row button {
+  background: #c85c74; color: #fff; border: none; border-radius: 10px;
+  padding: .55rem 1.2rem; font-size: .85rem; font-weight: 600; cursor: pointer;
+  white-space: nowrap; transition: background .2s;
+}
+.admin-form button:hover, .admin-row button:hover { background: #a04060; }
+.admin-check { display: flex; align-items: center; gap: .4rem; font-size: .82rem; color: #9e7a82; white-space: nowrap; }
+
+/* ── TABLE ── */
+.admin-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+.admin-table th {
+  text-align: left; padding: .6rem .8rem; font-size: .7rem; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #9e7a82; border-bottom: 1px solid #eedde2;
+}
+.admin-table td { padding: .65rem .8rem; border-bottom: 1px solid #f5e8eb; vertical-align: middle; }
+.admin-table tr:hover td { background: #fff8f9; }
+button.del {
+  background: none; border: none; color: #c55; cursor: pointer; font-size: .9rem;
+  transition: transform .15s;
+}
+button.del:hover { transform: scale(1.2); }
+button.toggle {
+  background: none; border: 1px solid #eedde2; border-radius: 20px;
+  padding: .2rem .7rem; font-size: .78rem; cursor: pointer; color: #9e7a82;
+  transition: background .2s, color .2s;
+}
+button.toggle.on { background: #c85c74; color: #fff; border-color: #c85c74; }
+
+/* ── PORTFOLIO GRID ── */
+.admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: .75rem; }
+.admin-photo { position: relative; border-radius: 10px; overflow: hidden; border: 1px solid #eedde2; }
+.admin-photo img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.admin-photo span {
+  display: block; font-size: .65rem; padding: .3rem .5rem;
+  background: #fff8f9; color: #9e7a82; text-align: center;
+}
+.admin-photo button {
+  position: absolute; top: .3rem; right: .3rem;
+  background: rgba(0,0,0,.55); color: #fff; border: none;
+  border-radius: 50%; width: 22px; height: 22px; font-size: .7rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
