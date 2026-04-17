@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from './firebase'
 import heroImg from './assets/hero.png'
 import './App.css'
 
@@ -6,51 +8,39 @@ const WHATSAPP = '254799030211'
 const wa = (msg: string) => window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, '_blank')
 
 type Service = { id: string; label: string; desc: string; price: number; emoji: string }
+type Package = { id: string; name: string; tag: string; price: number; items: string; highlight?: boolean }
+type Hours   = { id: string; days: string; time: string }
 
-const SERVICES: Service[] = [
-  { id: 'dress_single', emoji: '👗', label: 'Clothing Shoot', desc: 'Per dress – single angle', price: 100 },
-  { id: 'dress_set',    emoji: '✨', label: 'Full Set Shoot', desc: 'Front, Side & Back per dress', price: 500 },
-  { id: 'family_studio',emoji: '🏠', label: 'Studio Portrait', desc: 'Individual / couple / family', price: 2000 },
-  { id: 'family_outdoor',emoji:'🌿', label: 'Outdoor Portrait', desc: 'Natural light session', price: 3000 },
-  { id: 'event_photo',  emoji: '🎉', label: 'Event Photography', desc: 'Full event coverage', price: 5000 },
-  { id: 'event_video',  emoji: '🎬', label: 'Event Videography', desc: 'Cinematic video coverage', price: 8000 },
-  { id: 'passport',     emoji: '🪪', label: 'Passport Photos', desc: 'Instant processing & print', price: 300 },
-]
+const FALLBACK_SERVICES: Service[] = []
+const FALLBACK_PACKAGES: Package[] = []
+const FALLBACK_HOURS: Hours[] = []
 
-const PACKAGES = [
-  {
-    name: 'Starter',
-    tag: 'Perfect for individuals',
-    price: 1500,
-    items: ['1 outfit', '5 edited photos', 'Studio lighting', 'Same-day delivery'],
-  },
-  {
-    name: 'Fashion Model',
-    tag: 'Most popular',
-    price: 4000,
-    items: ['3 outfits', '20 edited photos', 'Full posing guidance', 'Studio + outdoor option'],
-    highlight: true,
-  },
-  {
-    name: 'Brand Premium',
-    tag: 'For fashion brands',
-    price: 9000,
-    items: ['Unlimited outfits', '50+ edited photos', 'Video clips included', 'Makeup support', 'Priority delivery'],
-  },
-]
-
-const TESTIMONIALS = [
-  { name: 'Amina K.', text: "Best studio I've used for my fashion brand. Very professional and fast delivery!", stars: 5 },
-  { name: 'Fatuma M.', text: 'My passport photos came out so clean. The team is friendly and quick.', stars: 5 },
-  { name: 'Zara H.', text: 'Booked a family shoot — the photos were stunning. Highly recommend!', stars: 5 },
-]
+const TESTIMONIALS: { name: string; text: string; stars: number }[] = []
 
 type CartItem = Service & { qty: number }
 
 export default function App() {
-  const [cart, setCart] = useState<CartItem[]>([])
-  const [date, setDate] = useState('')
+  const [cart, setCart]         = useState<CartItem[]>([])
+  const [date, setDate]         = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [services,  setServices]  = useState<Service[]>(FALLBACK_SERVICES)
+  const [packages,  setPackages]  = useState<Package[]>(FALLBACK_PACKAGES)
+  const [hours,     setHours]     = useState<Hours[]>(FALLBACK_HOURS)
+  const [portfolio, setPortfolio] = useState<{id:string;url:string;category:string}[]>([])
+
+  useEffect(() => {
+    Promise.all([
+      getDocs(collection(db, 'services')),
+      getDocs(collection(db, 'packages')),
+      getDocs(collection(db, 'hours')),
+      getDocs(collection(db, 'portfolio')),
+    ]).then(([s, p, h, pf]) => {
+      if (!s.empty) setServices(s.docs.map(d => ({ id: d.id, ...d.data() } as Service)))
+      if (!p.empty) setPackages(p.docs.map(d => ({ id: d.id, ...d.data() } as Package)))
+      if (!h.empty) setHours(h.docs.map(d => ({ id: d.id, ...d.data() } as Hours)))
+      if (!pf.empty) setPortfolio(pf.docs.map(d => ({ id: d.id, ...d.data() } as any)))
+    }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     const close = (e: MouseEvent) => {
@@ -83,7 +73,7 @@ export default function App() {
     wa(`Hi Color Studios 👋\n\nI'd like to book:\n\n${lines}\n\nTotal: KSh ${total.toLocaleString()}\nPreferred date: ${date || '___'}`)
   }
 
-  const bookPackage = (pkg: typeof PACKAGES[0]) =>
+  const bookPackage = (pkg: Package) =>
     wa(`Hi Color Studios 👋\n\nI'm interested in the *${pkg.name} Package* (KSh ${pkg.price.toLocaleString()}).\n\nPreferred date: ___`)
 
   const bookService = (svc: Service) =>
@@ -130,11 +120,16 @@ export default function App() {
           ))}
         </div>
         <div className="grid">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="grid-item">
-              <div className="placeholder-img">📷</div>
-            </div>
-          ))}
+          {portfolio.length > 0
+            ? portfolio.map(p => (
+                <div key={p.id} className="grid-item">
+                  <img src={p.url} alt={p.category} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+                </div>
+              ))
+            : Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="grid-item"><div className="placeholder-img">📷</div></div>
+              ))
+          }
         </div>
         <p className="grid-note">Drop your photos into <code>src/assets/</code> and replace the placeholders.</p>
       </section>
@@ -144,7 +139,7 @@ export default function App() {
         <p className="section-eyebrow">What We Offer</p>
         <h2>Services &amp; Pricing</h2>
         <div className="services-grid">
-          {SERVICES.map(svc => (
+          {services.map(svc => (
             <div key={svc.id} className="service-card">
               <div className="service-icon">{svc.emoji}</div>
               <h3>{svc.label}</h3>
@@ -166,14 +161,14 @@ export default function App() {
         <p className="section-eyebrow">Bundles</p>
         <h2>Choose a Package</h2>
         <div className="packages-grid">
-          {PACKAGES.map(pkg => (
-            <div key={pkg.name} className={`pkg-card${pkg.highlight ? ' pkg-highlight' : ''}`}>
+          {packages.map(pkg => (
+            <div key={pkg.id} className={`pkg-card${pkg.highlight ? ' pkg-highlight' : ''}`}>
               {pkg.highlight && <div className="pkg-badge">Most Popular</div>}
               <p className="pkg-tag">{pkg.tag}</p>
               <h3 className="pkg-name">{pkg.name}</h3>
               <p className="pkg-price">{pkg.price.toLocaleString()}</p>
               <ul className="pkg-list">
-                {pkg.items.map(item => <li key={item}>✓ {item}</li>)}
+                {String(pkg.items).split(',').map(item => <li key={item}>{item.trim()}</li>)}
               </ul>
               <button className="btn btn-primary pkg-btn" onClick={() => bookPackage(pkg)}>
                 📲 Book This Package
@@ -238,8 +233,7 @@ export default function App() {
           </div>
           <div className="info-card">
             <h3>⏰ Working Hours</h3>
-            <p>Mon – Sat: 8:00 AM – 7:00 PM</p>
-            <p>Sunday: 10:00 AM – 4:00 PM</p>
+            {hours.map(h => <p key={h.id}>{h.days}: {h.time}</p>)}
             <a className="btn btn-primary info-btn"
                href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Hi, I\'d like to book a session at Color Studios!')}`}
                target="_blank" rel="noreferrer">
