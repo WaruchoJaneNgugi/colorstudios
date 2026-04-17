@@ -50,6 +50,15 @@ type CartItem = Service & { qty: number }
 export default function App() {
   const [cart, setCart] = useState<CartItem[]>([])
   const [date, setDate] = useState('')
+  const [menuOpen, setMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (menuOpen && !(e.target as Element).closest('.topnav')) setMenuOpen(false)
+    }
+    document.addEventListener('click', close)
+    return () => document.removeEventListener('click', close)
+  }, [menuOpen])
 
   useEffect(() => {
     const obs = new IntersectionObserver(
@@ -82,13 +91,24 @@ export default function App() {
 
   return (
     <>
+      {/* ── NAV ── */}
+      <nav className={`topnav${menuOpen ? ' open' : ''}`}>
+        <a href="#" className="nav-logo">Color Studios</a>
+        <button className="nav-toggle" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
+          <span /><span /><span />
+        </button>
+        <ul className="nav-links" onClick={() => setMenuOpen(false)}>
+          {[['#portfolio','Portfolio'],['#services','Services'],['#packages','Packages'],['#booking','Book'],['#testimonials','Reviews'],['#location','Location']].map(([href, label]) => (
+            <li key={href}><a href={href}>{label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
       {/* ── HERO ── */}
       <header className="hero" style={{ backgroundImage: `url(${heroImg})` }}>
         <div className="hero-overlay">
           <p className="hero-eyebrow">✦ Nairobi's Premier Photography Studio</p>
-          <p className="hero-headline">Fashion Photography &amp; Creative Portrait Studio in Nairobi</p>
           <h1 className="logo">Color Studios</h1>
-          <p className="tagline">Fashion · Portraits · Events · Passport</p>
           <p className="sub">We create images that sell your brand and tell your story.<br />Book your session in seconds via WhatsApp.</p>
           <div className="hero-btns">
             <a href="#portfolio" className="btn btn-primary">View Portfolio</a>
@@ -110,7 +130,7 @@ export default function App() {
           ))}
         </div>
         <div className="grid">
-          {Array.from({ length: 9 }).map((_, i) => (
+          {Array.from({ length: 3 }).map((_, i) => (
             <div key={i} className="grid-item">
               <div className="placeholder-img">📷</div>
             </div>
@@ -151,7 +171,7 @@ export default function App() {
               {pkg.highlight && <div className="pkg-badge">Most Popular</div>}
               <p className="pkg-tag">{pkg.tag}</p>
               <h3 className="pkg-name">{pkg.name}</h3>
-              <p className="pkg-price">KSh {pkg.price.toLocaleString()}</p>
+              <p className="pkg-price">{pkg.price.toLocaleString()}</p>
               <ul className="pkg-list">
                 {pkg.items.map(item => <li key={item}>✓ {item}</li>)}
               </ul>
@@ -186,7 +206,7 @@ export default function App() {
       </section>
 
       {/* ── TESTIMONIALS ── */}
-      <section className="section">
+      <section id="testimonials" className="section">
         <p className="section-eyebrow">Client Love</p>
         <h2>What Our Clients Say</h2>
         <div className="stats-row">
@@ -206,7 +226,7 @@ export default function App() {
       </section>
 
       {/* ── LOCATION ── */}
-      <section className="section alt">
+      <section id="location" className="section alt">
         <p className="section-eyebrow">Visit Us</p>
         <h2>Find Us in Eastleigh</h2>
         <div className="info-grid">
@@ -244,6 +264,10 @@ export default function App() {
       <a className="sticky-wa" href={`https://wa.me/${WHATSAPP}`} target="_blank" rel="noreferrer" aria-label="Book on WhatsApp">
         📲 Book on WhatsApp
       </a>
+
+      <footer>
+        <p>© {new Date().getFullYear()} <span>Color Studios</span> · Istanbul Building, 5th Floor Room S48, Eastleigh, Nairobi</p>
+      </footer>
     </>
   )
 }
