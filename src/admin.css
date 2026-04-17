@@ -112,3 +112,38 @@ button.toggle.on { background: #c85c74; color: #fff; border-color: #c85c74; }
   border-radius: 50%; width: 22px; height: 22px; font-size: .7rem;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
+
+/* ── BOTTOM NAV (mobile only) ── */
+.admin-bottom-nav { display: none; }
+
+@media (max-width: 640px) {
+  .admin-tabs { display: none; }
+
+  .admin-bottom-nav {
+    display: flex;
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+    background: #fff; border-top: 1px solid #eedde2;
+    padding: .4rem 0 calc(.4rem + env(safe-area-inset-bottom));
+  }
+  .admin-bottom-nav button {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: .2rem;
+    background: none; border: none; cursor: pointer;
+    color: #9e7a82; font-size: .6rem; font-family: inherit; font-weight: 500;
+    padding: .3rem .2rem;
+    transition: color .2s;
+  }
+  .admin-bottom-nav button.active { color: #c85c74; }
+  .admin-bottom-nav button.bottom-logout { color: #c55; }
+
+  .admin-main { padding: 1.25rem 1rem 6rem; } /* space for bottom nav */
+  .admin-header { padding: .75rem 1rem; font-size: .8rem; }
+  .admin-logout { display: none; } /* logout moved to bottom nav */
+
+  .admin-form, .admin-row { flex-direction: column; align-items: stretch; }
+  .admin-form input, .admin-form select, .admin-row select { width: 100% !important; min-width: unset; }
+  .admin-form button, .admin-row button { width: 100%; }
+  .admin-check { justify-content: flex-start; }
+  .admin-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .admin-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+  .admin-login-card { padding: 2rem 1.25rem; }
+}

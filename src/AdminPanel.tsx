@@ -4,6 +4,7 @@ import {
 } from 'firebase/firestore'
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
 import { db, storage } from './firebase'
+import { Images, Layers, Package, Clock, LogOut } from 'lucide-react'
 import './admin.css'
 
 const ADMIN_USER = 'Colorstudio@admin'
@@ -128,6 +129,23 @@ export default function AdminPanel() {
             {t.charAt(0).toUpperCase() + t.slice(1)}
           </button>
         ))}
+      </nav>
+
+      {/* mobile bottom nav */}
+      <nav className="admin-bottom-nav">
+        {([
+          { t:'portfolio', icon:<Images size={20}/>,  label:'Portfolio' },
+          { t:'services',  icon:<Layers size={20}/>,  label:'Services'  },
+          { t:'packages',  icon:<Package size={20}/>, label:'Packages'  },
+          { t:'hours',     icon:<Clock size={20}/>,   label:'Hours'     },
+        ] as {t:Tab, icon:React.ReactNode, label:string}[]).map(({t,icon,label}) => (
+          <button key={t} className={tab === t ? 'active' : ''} onClick={() => setTab(t)}>
+            {icon}<span>{label}</span>
+          </button>
+        ))}
+        <button className="bottom-logout" onClick={() => setAuthed(false)}>
+          <LogOut size={20}/><span>Logout</span>
+        </button>
       </nav>
 
       <main className="admin-main">
