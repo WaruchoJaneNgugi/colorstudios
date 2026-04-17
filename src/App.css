@@ -55,7 +55,7 @@
     rgba(0,0,0,0.15) 40%,
     rgba(20,5,10,0.82) 100%
   );
-  /*backdrop-filter: blur(1px);*/
+  backdrop-filter: blur(1px);
 }
 .hero-overlay {
   position: relative;
