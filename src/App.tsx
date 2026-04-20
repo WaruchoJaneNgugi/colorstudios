@@ -27,6 +27,8 @@ export default function App() {
   const [packages,  setPackages]  = useState<Package[]>(FALLBACK_PACKAGES)
   const [hours,     setHours]     = useState<Hours[]>(FALLBACK_HOURS)
   const [portfolio, setPortfolio] = useState<{id:string;url:string;category:string}[]>([])
+  const [lightbox, setLightbox]   = useState<number | null>(null)
+  const [activeCategory, setActiveCategory] = useState('Events')
 
   useEffect(() => {
     Promise.all([
@@ -116,15 +118,15 @@ export default function App() {
         <h2>Our Work Speaks for Itself</h2>
         <div className="categories">
           {['Fashion / Product', 'Studio Portraits', 'Events', 'Passport'].map(c => (
-            <span key={c} className="cat-tag">{c}</span>
+            <span key={c} className={`cat-tag${activeCategory === c ? ' cat-active' : ''}`} onClick={() => { setActiveCategory(c); setLightbox(null) }}>{c}</span>
           ))}
         </div>
 
         <div className="grid">
           {portfolio.length > 0
-            ? portfolio.map(p => (
-                <div key={p.id} className="grid-item">
-                  <img src={p.url} alt={p.category} style={{width:'100%',height:'100%',objectFit:'cover'}} />
+            ? portfolio.filter(p => p.category === activeCategory).map((p, i) => (
+                <div key={p.id} className="grid-item" onClick={() => setLightbox(i)}>
+                  <img src={p.url} alt={p.category} style={{width:'100%',height:'100%',objectFit:'cover',objectPosition:'top'}} />
                 </div>
               ))
             : Array.from({ length: 3 }).map((_, i) => (
@@ -132,7 +134,6 @@ export default function App() {
               ))
           }
         </div>
-        <p className="grid-note">Drop your photos into <code>src/assets/</code> and replace the placeholders.</p>
       </section>
 
       {/* ── SERVICES ── */}
@@ -183,9 +184,7 @@ export default function App() {
       <section id="booking" className="section alt">
         <p className="section-eyebrow">Custom Booking</p>
         <h2>Build Your Session</h2>
-        {cart.length === 0 ? (
-          <p className="empty-cart">Add services from the list above to build a custom booking ☝️</p>
-        ) : (
+        {cart.length > 0 && (
           <div className="cart">
             {cart.map(i => (
               <div key={i.id} className="cart-row">
@@ -263,6 +262,17 @@ export default function App() {
       <footer>
         <p>© {new Date().getFullYear()} <span>Color Studios</span> · Istanbul Building, 5th Floor Room S48, Eastleigh, Nairobi</p>
       </footer>
+
+      {/* ── LIGHTBOX ── */}
+      {lightbox !== null && (
+        <div className="lightbox" onClick={() => setLightbox(null)}>
+          <button className="lb-close" onClick={() => setLightbox(null)}>✕</button>
+          <button className="lb-prev" onClick={e => { e.stopPropagation(); setLightbox((lightbox - 1 + portfolio.length) % portfolio.length) }}>&#8249;</button>
+          <img src={portfolio[lightbox].url} alt={portfolio[lightbox].category} onClick={e => e.stopPropagation()} />
+          <span className="lb-category">{portfolio[lightbox].category}</span>
+          <button className="lb-next" onClick={e => { e.stopPropagation(); setLightbox((lightbox + 1) % portfolio.length) }}>&#8250;</button>
+        </div>
+      )}
     </>
   )
 }
